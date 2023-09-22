@@ -4,7 +4,7 @@
       <Transition name="fade">
         <div class="overlay-wrapper" v-if="!countdownStarted && showUpdatePage">
           <div>
-            <p>Starprozente:</p>
+            <p>Startprozente:</p>
             <input v-model="percent" type="number" />
           </div>
           <div>
