@@ -10,6 +10,7 @@
 <script setup lang="ts">
 const percent = inject("percent");
 const startUpdateAfterSec = inject("startUpdate");
+const useRandomNumber = inject("useRandomNumber");
 const startUpdate = ref(false);
 const currentTime = ref(startUpdateAfterSec.value+.5);
 
@@ -26,21 +27,22 @@ onMounted(() => {
 
 watch(startUpdate, (value) => {
   if (value) {
-    decreasePercentage();
+    increasePercentage();
   }
 });
 
-const decreasePercentage = () => {
+const increasePercentage = () => {
   if (percent.value < 100) {
     percent.value++;
     setTimeout(() => {
-      decreasePercentage();
-    }, randomIntFromInterval(20, 20))
+      increasePercentage();
+    }, useRandomNumber.value ? randomIntFromInterval(14, 21) : 300)
   } 
 }
 
 const randomIntFromInterval = (min: number, max: number) => {
-  return Math.pow(Math.floor(Math.random() * (max - min + 1) + min), 2);
+  let result = Math.pow(Math.floor(Math.random() * (max - min + 1) + min), 2);
+  return result;
 }
 </script>
 <style lang="scss">

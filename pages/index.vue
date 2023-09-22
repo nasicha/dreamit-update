@@ -1,27 +1,34 @@
 <template>
     <Transition name="fade">
     <div v-if="!hideOverlay" class="overlay">
-      <div class="overlay-wrapper" v-if="!countdownStarted">
-        <div>
-          <p>Starprozente:</p>
-          <input v-model="percent" type="number" />
+      <Transition name="fade">
+        <div class="overlay-wrapper" v-if="!countdownStarted && showUpdatePage">
+          <div>
+            <p>Starprozente:</p>
+            <input v-model="percent" type="number" />
+          </div>
+          <div>
+            <p>Dauer:</p>
+            <input v-model="timer" type="number" />
+          </div>
+          <p>
+            Update startet in <span>{{ timer }} Sekunden.</span>
+          </p>
+          <div>
+            <p>Wechsel:</p>
+            <input v-model="startUpdateAfterSec" type="number" />
+          </div>
+          <p>
+            Screen wechselt bei <span>{{ startUpdateAfterSec }} Sekunden.</span>
+          </p>
+          <div>
+            <input type="checkbox" id="checkbox" v-model="useRandomNumber">
+            <label for="checkbox" >Zufällige Ladezeit? {{ useRandomNumber ? 'Ja' : 'Nein' }}</label>
+          </div>
+
+          <button @click="startCountdown">Start</button>
         </div>
-        <div>
-          <p>Dauer:</p>
-          <input v-model="timer" type="number" />
-        </div>
-        <p>
-          Update startet in <span>{{ timer }} Sekunden.</span>
-        </p>
-        <div>
-          <p>Wechsel:</p>
-          <input v-model="startUpdateAfterSec" type="number" />
-        </div>
-        <p>
-          Screen wechselt bei <span>{{ startUpdateAfterSec }} Sekunden.</span>
-        </p>
-        <button @click="startCountdown">Start</button>
-      </div>
+      </Transition>
       <div class="overlay-wrapper bigTime" v-if="countdownStarted">
         <h1>{{ timer }}</h1>
       </div>
@@ -35,8 +42,10 @@
 const percent = ref(0);
 const timer = ref(0);
 const startUpdateAfterSec = ref(0);
+const useRandomNumber = ref(false);
 const countdownStarted = ref(false);
 const hideOverlay = ref(false);
+const showUpdatePage = ref(false);
 
 onMounted(() => {
   if (process.client) {
@@ -61,7 +70,15 @@ onMounted(() => {
     } else {
       startUpdateAfterSec.value = parseInt(storedStartUpdate);
     }
+    const storedRandomNumber = localStorage.getItem("useRandomNumber");
+    if (storedRandomNumber === null) {
+      useRandomNumber.value = false;
+      localStorage.setItem("useRandomNumber", useRandomNumber.value.toString());
+    } else {
+      useRandomNumber.value = storedRandomNumber === "true" ? true : false;
+    }
   }
+  showUpdatePage.value = true;
 });
 
 const startCountdown = () => {
@@ -80,6 +97,7 @@ const startCountdown = () => {
 
 provide("percent", percent);
 provide("startUpdate", startUpdateAfterSec);
+provide("useRandomNumber", useRandomNumber);
 
 
 watch(timer, (value) => {
@@ -88,9 +106,12 @@ watch(timer, (value) => {
   }
 });
 
+watch(useRandomNumber, (value) => {
+  localStorage.setItem("useRandomNumber", value.toString());
+});
 
 useHead({
-  title: "DreamIt - Alarm",
+  title: "DreamIt - Update",
   link: [
     {
       rel: "preload",
