@@ -1,0 +1,55 @@
+$poppins-font-path: "../fonts";
+
+@font-face {
+  // This is parsed as a normal function call that takes a quoted string.
+  src: url("#{$poppins-font-path}/Poppins-Thin.ttf") format("trueType");
+
+  font-family: "Poppins";
+  font-weight: 100;
+}
+
+@font-face {
+  // This is parsed as a normal function call that takes a quoted string.
+  src: url("#{$poppins-font-path}/Poppins-ExtraLight.ttf") format("trueType");
+
+  font-family: "Poppins";
+  font-weight: 200;
+}
+@font-face {
+  // This is parsed as a normal function call that takes an arithmetic
+  // expression.
+  src: url($poppins-font-path + "/Poppins-Light.ttf") format("trueType");
+
+  font-family: "Poppins";
+  font-weight: 300;
+}
+
+@font-face {
+  // This is parsed as an interpolated special function.
+  src: url(#{$poppins-font-path}/Poppins-Regular.ttf) format("trueType");
+
+  font-family: "Poppins";
+  font-weight: 400;
+}
+
+@font-face {
+  // This is parsed as a normal function call that takes a quoted string.
+  src: url("#{$poppins-font-path}/Poppins-Medium.ttf") format("trueType");
+
+  font-family: "Poppins";
+  font-weight: 500;
+}
+
+@font-face {
+  // This is parsed as a normal function call that takes a quoted string.
+  src: url("#{$poppins-font-path}/Poppins-SemiBold.ttf") format("trueType");
+
+  font-family: "Poppins";
+  font-weight: 600;
+}
+
+body {
+  margin: 0;
+  font-family: Poppins, sans-serif, monospace;
+  font-style: normal;
+}
