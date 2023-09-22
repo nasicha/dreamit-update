@@ -90,7 +90,7 @@ watch(timer, (value) => {
 
 
 useHead({
-  title: "DreamIt - Alarm",
+  title: "DreamIt - Update",
   link: [
     {
       rel: "preload",
