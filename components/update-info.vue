@@ -3,16 +3,17 @@
     <span class="circle-percent">{{ percent }}</span>
     <span class="circle-word">Updating...</span>
     <img src="~assets/img/black-circle.png" class="circle-black" />
-    <div class="reveal"></div>
-    <img src="~assets/img/fancy-circle.png" class="circle-fancy" />
+    <div :style="{animationDuration: `${animationDuration}ms`, animationDelay: `-${animationDelay}ms`}" class="circle-fancy" :class="{'circle-fancy--animate': startUpdate}" />
   </div>
 </template>
 <script setup lang="ts">
-const percent = inject("percent");
-const startUpdateAfterSec = inject("startUpdate");
-const useRandomNumber = inject("useRandomNumber");
+const percent = inject("percent") as Ref<number>;
+const startUpdateAfterSec = inject("startUpdate") as Ref<number>;
 const startUpdate = ref(false);
-const currentTime = ref(startUpdateAfterSec.value+.5);
+const currentTime = ref(startUpdateAfterSec.value+0.5);
+const percentDuration = ref(300);
+const animationDuration = 100 * percentDuration.value;
+const animationDelay = percent.value * percentDuration.value;
 
 onMounted(() => {
   const updateInterval = setInterval(() => {
@@ -36,16 +37,12 @@ const increasePercentage = () => {
     percent.value++;
     setTimeout(() => {
       increasePercentage();
-    }, useRandomNumber.value ? randomIntFromInterval(14, 21) : 300)
+    }, percentDuration.value)
   } 
 }
 
-const randomIntFromInterval = (min: number, max: number) => {
-  let result = Math.pow(Math.floor(Math.random() * (max - min + 1) + min), 2);
-  return result;
-}
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 $size-wrapper: 330px;
 $size-black: 260px;
 $size-fancy: 290px;
@@ -91,14 +88,14 @@ $font-size-percentage: 6rem;
 
   &-black, &-fancy {
     position: absolute;    
-    top: 50%;
     left: 0;
     right: 0;
     margin: auto;
-    transform: translateY(-50%);
   }
 
   &-black {
+    top: 50%;
+    transform: translateY(-50%);
     width: $size-black;
     height: $size-black;
     z-index: 10;
@@ -107,7 +104,35 @@ $font-size-percentage: 6rem;
   &-fancy {
     width: $size-fancy;
     height: $size-fancy;
+    background: url('./assets/img/fancy-circle.png') no-repeat center center;
+    background-size: $size-fancy;
     z-index: 8;
+    opacity: 0;
+
+    &--animate {
+      opacity: 1;
+      animation: circle linear;
+      // box-shadow:0 0 0 1000px red;
+    }
+  }
+  @keyframes circle {
+    0% {
+      clip-path: polygon(50% 0,400% 0,400% 50%,50% -400%,50% 50%);
+    }
+    25% {
+      clip-path: polygon(50% 0,400% 0,400% 50%,400% 50%,50% 50%);    
+    }
+    50% {    
+      clip-path: polygon(50% 0,400% 0,400% 50%,50% 400%,50% 50%);
+    }
+    75% {
+      clip-path: polygon(50% 0,400% 0%,50% 400%,-300% 50%,50% 50%);
+    }
+    100% { 
+      clip-path: polygon(50% 0,400% 0%,-300% 400%,50% -300%,50% 50%);
+    }
   }
 }
+
+
 </style>

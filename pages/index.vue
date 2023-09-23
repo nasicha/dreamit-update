@@ -21,10 +21,6 @@
           <p>
             Screen wechselt bei <span>{{ startUpdateAfterSec }} Sekunden.</span>
           </p>
-          <div>
-            <input type="checkbox" id="checkbox" v-model="useRandomNumber">
-            <label for="checkbox" >Zufällige Ladezeit? {{ useRandomNumber ? 'Ja' : 'Nein' }}</label>
-          </div>
 
           <button @click="startCountdown">Start</button>
         </div>
@@ -42,7 +38,6 @@
 const percent = ref(0);
 const timer = ref(0);
 const startUpdateAfterSec = ref(0);
-const useRandomNumber = ref(false);
 const countdownStarted = ref(false);
 const hideOverlay = ref(false);
 const showUpdatePage = ref(false);
@@ -70,13 +65,6 @@ onMounted(() => {
     } else {
       startUpdateAfterSec.value = parseInt(storedStartUpdate);
     }
-    const storedRandomNumber = localStorage.getItem("useRandomNumber");
-    if (storedRandomNumber === null) {
-      useRandomNumber.value = false;
-      localStorage.setItem("useRandomNumber", useRandomNumber.value.toString());
-    } else {
-      useRandomNumber.value = storedRandomNumber === "true" ? true : false;
-    }
   }
   showUpdatePage.value = true;
 });
@@ -97,17 +85,11 @@ const startCountdown = () => {
 
 provide("percent", percent);
 provide("startUpdate", startUpdateAfterSec);
-provide("useRandomNumber", useRandomNumber);
-
 
 watch(timer, (value) => {
   if (value <= startUpdateAfterSec.value && countdownStarted.value) {
     hideOverlay.value = true;
   }
-});
-
-watch(useRandomNumber, (value) => {
-  localStorage.setItem("useRandomNumber", value.toString());
 });
 
 useHead({
