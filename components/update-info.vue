@@ -1,10 +1,12 @@
 <template>
-  <div class="wrapper">
-    <span class="circle-percent">{{ percent }}</span>
-    <span class="circle-word">Updating...</span>
-    <img src="~assets/img/black-circle.png" class="circle-black" />
-    <div :style="{animationDuration: `${animationDuration}ms`, animationDelay: `-${animationDelay}ms`}" class="circle-fancy" :class="{'circle-fancy--animate': startUpdate}" />
-  </div>
+  <Transition name="fade-grow">
+    <div class="wrapper">
+      <span class="circle-percent">{{ percent }}</span>
+      <span class="circle-word">Updating...</span>
+      <img src="~assets/img/black-circle.png" class="circle-black" />
+      <div :style="{animationDuration: `${animationDuration}ms`, animationDelay: `-${animationDelay}ms`}" class="circle-fancy" :class="{'circle-fancy--animate': startUpdate}" />
+    </div>
+  </Transition>
 </template>
 <script setup lang="ts">
 const percent = inject("percent") as Ref<number>;
@@ -14,6 +16,8 @@ const currentTime = ref(startUpdateAfterSec.value+0.5);
 const percentDuration = ref(300);
 const animationDuration = 100 * percentDuration.value;
 const animationDelay = percent.value * percentDuration.value;
+
+const updateFinished = ref(false);
 
 onMounted(() => {
   const updateInterval = setInterval(() => {
@@ -38,7 +42,9 @@ const increasePercentage = () => {
     setTimeout(() => {
       increasePercentage();
     }, percentDuration.value)
-  } 
+  } else {
+    updateFinished.value = true;
+  }
 }
 
 </script>
@@ -107,12 +113,11 @@ $font-size-percentage: 6rem;
     background: url('./assets/img/fancy-circle.png') no-repeat center center;
     background-size: $size-fancy;
     z-index: 8;
-    opacity: 0;
+    opacity: 1;
 
     &--animate {
       opacity: 1;
       animation: circle linear;
-      // box-shadow:0 0 0 1000px red;
     }
   }
   @keyframes circle {
