@@ -15,12 +15,11 @@
 <script setup lang="ts">
 const percent = inject("percent") as Ref<number>;
 const startUpdateAfterSec = inject("startUpdate") as Ref<number>;
+const percentDuration = inject("animationDuration") as Ref<number>;
 const startUpdate = ref(false);
 const currentTime = ref(startUpdateAfterSec.value+0.5);
-const percentDuration = ref(300);
 const animationDuration = 100 * percentDuration.value;
 const animationDelay = percent.value * percentDuration.value;
-
 const updateFinished = ref(false);
 
 onMounted(() => {

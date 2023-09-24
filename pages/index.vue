@@ -7,20 +7,25 @@
             <p>Startprozente:</p>
             <input v-model="percent" type="number" />
           </div>
+            <!-- <input type="range" v-model="animationDuration" min="200" max="400" step="20" class="slider" />
+            <p>10% dauern <span>{{ animationDuration/100 }} Sekunden</span>; 1% - <span>{{ animationDuration }}ms.</span>
+            </p> -->
           <div>
-            <p>Dauer:</p>
+            <p>Start:</p>
             <input v-model="timer" type="number" />
           </div>
           <p>
-            Update startet in <span>{{ timer }} Sekunden.</span>
+            Update startet in <span>{{ timer }} {{ timer === 1 ? 'Sekunde' : 'Sekunden' }}.</span>
           </p>
           <div>
             <p>Wechsel:</p>
             <input v-model="startUpdateAfterSec" type="number" />
           </div>
           <p>
-            Screen wechselt bei <span>{{ startUpdateAfterSec }} Sekunden.</span>
+            Screen wechselt bei <span>{{ startUpdateAfterSec }} {{ startUpdateAfterSec === 1 ? 'Sekunde' : 'Sekunden' }}.</span>
           </p>
+
+
 
           <button @click="startCountdown">Start</button>
         </div>
@@ -41,6 +46,7 @@ const startUpdateAfterSec = ref(0);
 const countdownStarted = ref(false);
 const hideOverlay = ref(false);
 const showUpdatePage = ref(false);
+const animationDuration = ref(300);
 
 onMounted(() => {
   if (process.client) {
@@ -65,6 +71,13 @@ onMounted(() => {
     } else {
       startUpdateAfterSec.value = parseInt(storedStartUpdate);
     }
+    const storedAnimationDuration = localStorage.getItem("animationDuration");
+    if (storedAnimationDuration === null) {
+      animationDuration.value = 300;
+      localStorage.setItem("animationDuration", animationDuration.value.toString());
+    } else {
+      animationDuration.value = parseInt(storedAnimationDuration);
+    }
   }
   showUpdatePage.value = true;
 });
@@ -74,6 +87,7 @@ const startCountdown = () => {
   localStorage.setItem("percent-update", percent.value.toString());
   localStorage.setItem("timer", timer.value.toString());
   localStorage.setItem("startUpdate", startUpdateAfterSec.value.toString());
+  localStorage.setItem("animationDuration", animationDuration.value.toString());
   const countdownInterval = setInterval(() => {
     if (timer.value > 0) {
       timer.value--;
@@ -85,6 +99,7 @@ const startCountdown = () => {
 
 provide("percent", percent);
 provide("startUpdate", startUpdateAfterSec);
+provide("animationDuration", animationDuration);
 
 watch(timer, (value) => {
   if (value <= startUpdateAfterSec.value && countdownStarted.value) {
@@ -148,5 +163,23 @@ useHead({
       margin-top: auto;
     }
   }
+}
+input[type=range] {
+  margin: 24px 0 8px;
+	appearance: none;
+	width: 100%;
+	border-radius: 12px;
+	height: 12px;
+	border: 1px solid ;
+	background-color: white; 
+
+  &::-webkit-slider-thumb {
+      width: 20px;
+      -webkit-appearance: none;
+      height: 20px;
+      border-radius: 100%;
+      background: #efefef;
+      box-shadow: 0 0 4px 6px rgba(200,200,200,0.5);
+    }
 }
 </style>
