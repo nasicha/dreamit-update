@@ -4,7 +4,11 @@
       <span class="circle-percent">{{ percent }}</span>
       <span class="circle-word">Updating...</span>
       <img src="~assets/img/black-circle.png" class="circle-black" />
-      <div :style="{animationDuration: `${animationDuration}ms`, animationDelay: `-${animationDelay}ms`}" class="circle-fancy" :class="{'circle-fancy--animate': startUpdate}" />
+      <div 
+        :style="{animationDuration: `${animationDuration}ms`, animationDelay: `-${animationDelay}ms`}" 
+        class="circle-fancy" 
+        :class="{'circle-fancy--animate': startUpdate, 'circle-fancy--animate--finished': updateFinished}" 
+      />
     </div>
   </Transition>
 </template>
@@ -113,28 +117,44 @@ $font-size-percentage: 6rem;
     background: url('./assets/img/fancy-circle.png') no-repeat center center;
     background-size: $size-fancy;
     z-index: 8;
-    opacity: 1;
+    animation: circle linear;
+    animation-play-state: paused;
 
     &--animate {
-      opacity: 1;
-      animation: circle linear;
+    animation-play-state: running;
+
+      &--finished {
+        clip-path: polygon(0 0, 0% 100%, 100% 100%, 100% 0%);
+      }
     }
   }
   @keyframes circle {
     0% {
-      clip-path: polygon(50% 0,400% 0,400% 50%,50% -400%,50% 50%);
+      clip-path: polygon(50% 50%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%);
+    }
+    13% {
+      clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%);
     }
     25% {
-      clip-path: polygon(50% 0,400% 0,400% 50%,400% 50%,50% 50%);    
+      clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 50%, 100% 50%, 100% 50%, 100% 50%);
+    }
+    38% {
+      clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 100% 100%, 100% 100%, 100% 100%);
     }
     50% {    
-      clip-path: polygon(50% 0,400% 0,400% 50%,50% 400%,50% 50%);
+      clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%, 50% 100%, 50% 100%);
+    }
+    63% {
+      clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 100%, 0% 100%);
     }
     75% {
-      clip-path: polygon(50% 0,400% 0%,50% 400%,-300% 50%,50% 50%);
+      clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%, 0% 50%);
+    }
+    88% {
+      clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 0% 0%);
     }
     100% { 
-      clip-path: polygon(50% 0,400% 0%,-300% 400%,50% -300%,50% 50%);
+      clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 50% 0%);
     }
   }
 }
